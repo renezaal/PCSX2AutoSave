@@ -25,6 +25,7 @@ namespace AutoPCSX2SaveState
         private Controller[] controllers;
         private Dictionary<object, ulong> buttonStates = new Dictionary<object, ulong>();
         private Dictionary<object, float> triggerStates = new Dictionary<object, float>();
+        AutoHotkey.Interop.AutoHotkeyEngine ahk = new AutoHotkey.Interop.AutoHotkeyEngine();
 
         public Form1()
         {
@@ -116,9 +117,17 @@ namespace AutoPCSX2SaveState
 
         private void sendKeystrokes()
         {
-            SendKeys.SendWait("{F2}");
-            System.Threading.Thread.Sleep(1000);
-            SendKeys.SendWait("{F1}");
+            //SendKeys.SendWait("{F2}");
+            //System.Threading.Thread.Sleep(1000);
+            //SendKeys.SendWait("{F1}");
+            ahk.ExecRaw(@"
+Send, {F2 Down}
+Sleep, 50
+Send, {F2 Up}
+Sleep, 50
+Send, {F1}
+");
+
             timesSaved++;
             lastSave = DateTime.Now;
         }
@@ -181,9 +190,9 @@ namespace AutoPCSX2SaveState
                     return;
                 }
                 string key = controller.GetHashCode().ToString();
-                float triggerState=cState.Gamepad.LeftTrigger;
-                float previousTriggerState=triggerStates[key+"left"];
-                if (Math.Abs(triggerState-previousTriggerState) > Gamepad.GamepadTriggerThreshold)
+                float triggerState = cState.Gamepad.LeftTrigger;
+                float previousTriggerState = triggerStates[key + "left"];
+                if (Math.Abs(triggerState - previousTriggerState) > Gamepad.GamepadTriggerThreshold)
                 {
                     lastActivity = DateTime.Now;
                     return;
