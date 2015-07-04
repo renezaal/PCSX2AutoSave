@@ -34,6 +34,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lblHead = new System.Windows.Forms.Label();
+            this.lblIdle = new System.Windows.Forms.Label();
+            this.lblNumSaves = new System.Windows.Forms.Label();
+            this.lblMinIdle = new System.Windows.Forms.Label();
+            this.lblTimeSinceLastSave = new System.Windows.Forms.Label();
+            this.lblRetryInterval = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudSaveInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudButtonDelay)).BeginInit();
             this.SuspendLayout();
@@ -41,7 +46,7 @@
             // btnStartStop
             // 
             this.btnStartStop.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnStartStop.Location = new System.Drawing.Point(0, 73);
+            this.btnStartStop.Location = new System.Drawing.Point(0, 233);
             this.btnStartStop.Name = "btnStartStop";
             this.btnStartStop.Size = new System.Drawing.Size(271, 23);
             this.btnStartStop.TabIndex = 0;
@@ -124,11 +129,61 @@
             this.lblHead.Text = "All times are expressed in seconds";
             this.lblHead.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lblIdle
+            // 
+            this.lblIdle.AutoSize = true;
+            this.lblIdle.Location = new System.Drawing.Point(12, 96);
+            this.lblIdle.Name = "lblIdle";
+            this.lblIdle.Size = new System.Drawing.Size(35, 13);
+            this.lblIdle.TabIndex = 6;
+            this.lblIdle.Text = "label3";
+            // 
+            // lblNumSaves
+            // 
+            this.lblNumSaves.AutoSize = true;
+            this.lblNumSaves.Location = new System.Drawing.Point(12, 109);
+            this.lblNumSaves.Name = "lblNumSaves";
+            this.lblNumSaves.Size = new System.Drawing.Size(35, 13);
+            this.lblNumSaves.TabIndex = 7;
+            this.lblNumSaves.Text = "label4";
+            // 
+            // lblMinIdle
+            // 
+            this.lblMinIdle.AutoSize = true;
+            this.lblMinIdle.Location = new System.Drawing.Point(12, 83);
+            this.lblMinIdle.Name = "lblMinIdle";
+            this.lblMinIdle.Size = new System.Drawing.Size(35, 13);
+            this.lblMinIdle.TabIndex = 8;
+            this.lblMinIdle.Text = "label5";
+            // 
+            // lblTimeSinceLastSave
+            // 
+            this.lblTimeSinceLastSave.AutoSize = true;
+            this.lblTimeSinceLastSave.Location = new System.Drawing.Point(12, 122);
+            this.lblTimeSinceLastSave.Name = "lblTimeSinceLastSave";
+            this.lblTimeSinceLastSave.Size = new System.Drawing.Size(35, 13);
+            this.lblTimeSinceLastSave.TabIndex = 9;
+            this.lblTimeSinceLastSave.Text = "label4";
+            // 
+            // lblRetryInterval
+            // 
+            this.lblRetryInterval.AutoSize = true;
+            this.lblRetryInterval.Location = new System.Drawing.Point(12, 135);
+            this.lblRetryInterval.Name = "lblRetryInterval";
+            this.lblRetryInterval.Size = new System.Drawing.Size(35, 13);
+            this.lblRetryInterval.TabIndex = 10;
+            this.lblRetryInterval.Text = "label4";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(271, 96);
+            this.ClientSize = new System.Drawing.Size(271, 256);
+            this.Controls.Add(this.lblRetryInterval);
+            this.Controls.Add(this.lblTimeSinceLastSave);
+            this.Controls.Add(this.lblMinIdle);
+            this.Controls.Add(this.lblNumSaves);
+            this.Controls.Add(this.lblIdle);
             this.Controls.Add(this.lblHead);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -154,6 +209,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblHead;
+        private System.Windows.Forms.Label lblIdle;
+        private System.Windows.Forms.Label lblNumSaves;
+        private System.Windows.Forms.Label lblMinIdle;
+        private System.Windows.Forms.Label lblTimeSinceLastSave;
+        private System.Windows.Forms.Label lblRetryInterval;
     }
 }
 
