@@ -116,9 +116,9 @@ namespace AutoPCSX2SaveState
 
         private void sendKeystrokes()
         {
-            //SendKeys.SendWait("{F2}");
-            //System.Threading.Thread.Sleep(50);
-            //SendKeys.SendWait("{F1}");
+            SendKeys.SendWait("{F2}");
+            System.Threading.Thread.Sleep(1000);
+            SendKeys.SendWait("{F1}");
             timesSaved++;
             lastSave = DateTime.Now;
         }
