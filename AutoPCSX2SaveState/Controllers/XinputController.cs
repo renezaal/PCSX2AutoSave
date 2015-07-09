@@ -82,5 +82,11 @@ namespace AutoPCSX2SaveState.Controllers
             }
             lastRightTriggerState = rightTriggerState;
         }
+
+
+        public void Dispose()
+        {
+            // do nothing
+        }
     }
 }

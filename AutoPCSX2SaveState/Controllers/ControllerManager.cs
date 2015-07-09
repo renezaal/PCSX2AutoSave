@@ -18,9 +18,12 @@ namespace AutoPCSX2SaveState.Controllers
             return controllers;
         }
 
+        private static List<DirectInput> directInputs = new List<DirectInput>();
         private static List<DirectInputController> GetDirectInputControllers()
         {
-            Joystick[] sticks = GamePadHelper.GetSticks(new DirectInput());
+            DirectInput directInput = new DirectInput();
+            directInputs.Add(directInput);
+            Joystick[] sticks = GamePadHelper.GetSticks(directInput);
             List<DirectInputController> controllers = new List<DirectInputController>();
             foreach (Joystick stick in sticks)
             {
@@ -37,6 +40,16 @@ namespace AutoPCSX2SaveState.Controllers
                 controllers.Add(new XinputController(user));
             }
             return controllers;
+        }
+
+
+
+        public static void Dispose()
+        {
+            foreach (DirectInput directInput in directInputs)
+            {
+                directInput.Dispose();
+            }
         }
     }
 }

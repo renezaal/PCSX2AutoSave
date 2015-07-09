@@ -183,6 +183,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Automatic state saver";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.nudSaveInterval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudButtonDelay)).EndInit();
             this.ResumeLayout(false);

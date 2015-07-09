@@ -10,5 +10,6 @@ namespace AutoPCSX2SaveState.Controllers
     {
         double GetIdleTime();
         void Poll();
+        void Dispose();
     }
 }

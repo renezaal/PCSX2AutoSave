@@ -29,6 +29,10 @@ namespace AutoPCSX2SaveState.Controllers
 
         public void Poll()
         {
+            if (stick.Disposed)
+            {
+                return;
+            }
             ulong buttonsState = 0;
             JoystickState jState = stick.GetCurrentState();
 
@@ -44,6 +48,11 @@ namespace AutoPCSX2SaveState.Controllers
                 lastActivity = DateTime.Now;
                 lastState = buttonsState;
             }
+        }
+
+        public void Dispose()
+        {
+            stick.Dispose();
         }
     }
 }

@@ -11,6 +11,9 @@ using SlimDX.DirectInput;
 using SlimDX.XInput;
 using AutoPCSX2SaveState.KeyboardAndMouse;
 using AutoPCSX2SaveState.Controllers;
+using System.Windows.Automation;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace AutoPCSX2SaveState
 {
@@ -21,8 +24,8 @@ namespace AutoPCSX2SaveState
         private System.Timers.Timer delayTimer = new System.Timers.Timer();
         private System.Timers.Timer updateInfoTimer = new System.Timers.Timer(500);
         private int timesSaved = 0;
-        private DateTime lastSave = DateTime.MinValue;
-        private DateTime targetSaveTime=DateTime.Now;
+        private DateTime lastSave = DateTime.Now;
+        private DateTime targetSaveTime = DateTime.Now;
         private AutoHotkey.Interop.AutoHotkeyEngine ahk = new AutoHotkey.Interop.AutoHotkeyEngine();
         private ControllerIdleGetter controllerIdleGetter;
 
@@ -36,7 +39,22 @@ namespace AutoPCSX2SaveState
             timer.AutoReset = true;
 
             controllerIdleGetter = new ControllerIdleGetter();
+            Automation.AddAutomationFocusChangedEventHandler(OnFocusChanged);
         }
+
+        void OnFocusChanged(object sender, AutomationFocusChangedEventArgs e)
+        {
+            AutomationElement element = sender as AutomationElement;
+            if (element == null) { return; }
+
+            int processId = element.Current.ProcessId;
+            using (Process process = Process.GetProcessById(processId))
+            {
+                currentProcess = process.ProcessName;
+                //Debug.WriteLine(String.Format("Current process: {0}",currentProcess));
+            }
+        }
+        private string currentProcess = String.Empty;
 
         void updateInfoTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -47,12 +65,12 @@ namespace AutoPCSX2SaveState
         {
             timerExpired();
 
-            targetSaveTime= DateTime.Now.AddMilliseconds(timer.Interval);
+            targetSaveTime = DateTime.Now.AddMilliseconds(timer.Interval);
 
             if (delayTimer.Enabled)
             {
                 DateTime delayTarget = DateTime.Now.AddMilliseconds(delayTimer.Interval);
-                if (delayTarget<targetSaveTime)
+                if (delayTarget < targetSaveTime)
                 {
                     targetSaveTime = delayTarget;
                 }
@@ -60,6 +78,8 @@ namespace AutoPCSX2SaveState
 
             updateLabels();
         }
+
+
 
         private void start()
         {
@@ -83,6 +103,11 @@ namespace AutoPCSX2SaveState
 
         private void timerExpired()
         {
+            if (!currentProcess.StartsWith("pcsx2",StringComparison.InvariantCultureIgnoreCase))
+            {
+                delayTimer.Stop();
+                return;
+            }
             double idleTime = getIdleTimeInSeconds();
             double minIdleTime = (double)nudButtonDelay.Value;
 
@@ -108,6 +133,7 @@ namespace AutoPCSX2SaveState
 
         private void save()
         {
+            Debug.WriteLine(String.Format(@"Saving at: {0:HH':'mm':'ss}, Time since last save: {1:0.00} minutes", DateTime.Now,(DateTime.Now-lastSave).TotalMinutes));
             Color color = this.BackColor;
             this.BackColor = Color.Green;
             Application.DoEvents();
@@ -134,7 +160,7 @@ Send, {F1}
             }
 
             lblNumSaves.Text = String.Format("{0}", timesSaved);
-            lblTimeUntilSave.Text = String.Format("{0:0.0} seconds",(targetSaveTime- DateTime.Now).TotalSeconds);
+            lblTimeUntilSave.Text = String.Format("{0:0.0} seconds", (targetSaveTime - DateTime.Now).TotalSeconds);
         }
 
         private void btnStartStop_Click(object sender, EventArgs e)
@@ -148,12 +174,18 @@ Send, {F1}
 
         private double getIdleTimeInSeconds()
         {
-            return  Math.Min(KeyboardAndMouseIdleGetter.GetIdleTime(), controllerIdleGetter.GetIdleTime()); 
+            return Math.Min(KeyboardAndMouseIdleGetter.GetIdleTime(), controllerIdleGetter.GetIdleTime());
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            stop();
+            controllerIdleGetter.Dispose();
         }
 
     }
 
-    
 
-    
+
+
 }

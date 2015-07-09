@@ -34,5 +34,13 @@ namespace AutoPCSX2SaveState.Controllers
             }
             return idleTime;
         }
+
+        public void Dispose() {
+            foreach (IController controller in controllers)
+            {
+                controller.Dispose();
+            }
+            ControllerManager.Dispose();
+        }
     }
 }
