@@ -51,7 +51,7 @@
             this.btnStartStop.TabIndex = 0;
             this.btnStartStop.Text = "Start";
             this.btnStartStop.UseVisualStyleBackColor = true;
-            this.btnStartStop.Click += new System.EventHandler(this.btnStartStop_Click);
+            this.btnStartStop.Click += new System.EventHandler(this.BtnStartStop_Click);
             // 
             // nudSaveInterval
             // 

@@ -1,58 +1,43 @@
 ﻿using SlimDX.DirectInput;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AutoPCSX2SaveState.Controllers
-{
-    class DirectInputController : IController
-    {
-        private Joystick stick;
-        private ulong lastState;
-        private DateTime lastActivity;
+namespace AutoPCSX2SaveState.Controllers {
+	class DirectInputController : IController {
+		private Joystick _stick;
+		private ulong _lastState;
+		private DateTime _lastActivity;
 
-        public DirectInputController(Joystick stick)
-        {
-            this.stick = stick;
-            lastState = 0;
-            lastActivity = DateTime.Now;
-        }
+		public DirectInputController(Joystick stick) {
+			this._stick = stick;
+			_lastState = 0;
+			_lastActivity = DateTime.Now;
+		}
 
+		public double GetIdleTime() {
+			return (DateTime.Now - _lastActivity).TotalSeconds;
+		}
 
-        public double GetIdleTime()
-        {
-            return (DateTime.Now - lastActivity).TotalSeconds;
-        }
+		public void Poll() {
+			if (_stick.Disposed) {
+				return;
+			}
+			ulong buttonsState = 0;
+			JoystickState jState = _stick.GetCurrentState();
 
+			bool[] buttonsArray = jState.GetButtons();
 
-        public void Poll()
-        {
-            if (stick.Disposed)
-            {
-                return;
-            }
-            ulong buttonsState = 0;
-            JoystickState jState = stick.GetCurrentState();
+			for (int i = 0; i < buttonsArray.Length; i++) {
+				buttonsState |= (ulong)(buttonsArray[i] ? 1 : 0) << i;
+			}
 
-            bool[] buttonsArray = jState.GetButtons();
+			if (buttonsState != _lastState) {
+				_lastActivity = DateTime.Now;
+				_lastState = buttonsState;
+			}
+		}
 
-            for (int i = 0; i < buttonsArray.Length; i++)
-            {
-                buttonsState |= (ulong)(buttonsArray[i] ? 1 : 0) << i;
-            }
-
-            if (buttonsState != lastState)
-            {
-                lastActivity = DateTime.Now;
-                lastState = buttonsState;
-            }
-        }
-
-        public void Dispose()
-        {
-            stick.Dispose();
-        }
-    }
+		public void Dispose() {
+			_stick.Dispose();
+		}
+	}
 }

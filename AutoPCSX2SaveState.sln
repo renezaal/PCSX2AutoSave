@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoPCSX2SaveState", "AutoPCSX2SaveState\AutoPCSX2SaveState.csproj", "{E7D82055-B272-4DE0-B9B4-1EB120001868}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoHotkey.Interop", "..\..\..\Repos\AutoHotkey.Interop\src\AutoHotkey.Interop\AutoHotkey.Interop.csproj", "{2869DBFE-7762-4930-95EA-2B0C111CF353}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoHotkey.Interop", "AutoHotkey.Interop\src\AutoHotkey.Interop\AutoHotkey.Interop.csproj", "{2869DBFE-7762-4930-95EA-2B0C111CF353}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,5 +34,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7D4C821D-D0AB-45DD-BD7D-BFBA47A357AA}
 	EndGlobalSection
 EndGlobal
