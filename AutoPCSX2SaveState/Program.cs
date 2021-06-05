@@ -1,13 +1,20 @@
-﻿using System;
-using System.Windows.Forms;
+﻿// <copyright file="Program.cs" company="Epiphaner">
+// Copyright (c) Epiphaner. All rights reserved.
+// </copyright>
 
-namespace AutoPCSX2SaveState {
-	static class Program {
+namespace AutoPCSX2SaveState
+{
+	using System;
+	using System.Windows.Forms;
+
+	internal static class Program
+	{
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static void Main() {
+		private static void Main()
+		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AutoPCSX2SaveState</RootNamespace>
     <AssemblyName>AutoPCSX2SaveState</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -58,8 +58,8 @@
     <StartupObject>AutoPCSX2SaveState.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
-      <HintPath>..\packages\SlimDX.4.0.13.44\lib\NET40\SlimDX.dll</HintPath>
+    <Reference Include="sharpAHK, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\sharpAHK.1.0.0.5\lib\net45\sharpAHK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -73,15 +73,17 @@
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationClient" />
     <Reference Include="UIAutomationTypes" />
+    <Reference Include="Vortice.XInput, Version=1.9.0.0, Culture=neutral, PublicKeyToken=5431ec61a7e925da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Vortice.XInput.1.9.80\lib\netstandard2.0\Vortice.XInput.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\ControllerIdleGetter.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="InputIdleGetter.cs" />
     <Compile Include="Controllers\ControllerManager.cs" />
-    <Compile Include="Controllers\DirectInputController.cs" />
-    <Compile Include="Controllers\GamePadHelper.cs" />
     <Compile Include="Controllers\IController.cs" />
     <Compile Include="Controllers\XinputController.cs" />
-    <Compile Include="KeyboardAndMouse\IdleTimeFinder.cs" />
     <Compile Include="KeyboardAndMouse\KeyboardAndMouseIdleGetter.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -117,12 +119,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutoHotkey.Interop\src\AutoHotkey.Interop\AutoHotkey.Interop.csproj">
-      <Project>{2869dbfe-7762-4930-95ea-2b0c111cf353}</Project>
-      <Name>AutoHotkey.Interop</Name>
-    </ProjectReference>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

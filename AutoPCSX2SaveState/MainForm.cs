@@ -1,117 +1,152 @@
-﻿using AutoPCSX2SaveState.Controllers;
-using AutoPCSX2SaveState.KeyboardAndMouse;
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Automation;
-using System.Windows.Forms;
+﻿// <copyright file="MainForm.cs" company="Epiphaner">
+// Copyright (c) Epiphaner. All rights reserved.
+// </copyright>
 
-namespace AutoPCSX2SaveState {
-	public partial class MainForm : Form {
-		private bool _running = false;
-		private System.Timers.Timer _timer = new System.Timers.Timer();
-		private System.Timers.Timer _delayTimer = new System.Timers.Timer();
-		private System.Timers.Timer _updateInfoTimer = new System.Timers.Timer(500);
-		private int _timesSaved = 0;
-		private DateTime _lastSave = DateTime.Now;
-		private DateTime _targetSaveTime = DateTime.Now;
-		private AutoHotkey.Interop.AutoHotkeyEngine _ahk = AutoHotkey.Interop.AutoHotkeyEngine.Instance;
-		private ControllerIdleGetter _controllerIdleGetter;
+namespace AutoPCSX2SaveState
+{
+	using System;
+	using System.Diagnostics;
+	using System.Drawing;
+	using System.Windows.Automation;
+	using System.Windows.Forms;
 
-		public MainForm() {
-			InitializeComponent();
-			_timer.Elapsed += Timer_Elapsed;
-			_delayTimer.Elapsed += Timer_Elapsed;
-			_updateInfoTimer.Elapsed += UpdateInfoTimer_Elapsed;
-			_delayTimer.AutoReset = false;
-			_timer.AutoReset = true;
+	public partial class MainForm : Form
+	{
+		private bool running = false;
+		private System.Timers.Timer timer = new System.Timers.Timer();
+		private System.Timers.Timer delayTimer = new System.Timers.Timer();
+		private System.Timers.Timer updateInfoTimer = new System.Timers.Timer(500);
+		private int timesSaved = 0;
+		private DateTime lastSave = DateTime.Now;
+		private DateTime targetSaveTime = DateTime.Now;
+		private AutoHotkey.Interop.AutoHotkeyEngine ahk = AutoHotkey.Interop.AutoHotkeyEngine.Instance;
+		private InputIdleGetter controllerIdleGetter;
 
-			_controllerIdleGetter = new ControllerIdleGetter();
-			Automation.AddAutomationFocusChangedEventHandler(OnFocusChanged);
+		public MainForm()
+		{
+			this.InitializeComponent();
+			this.timer.Elapsed += this.Timer_Elapsed;
+			this.delayTimer.Elapsed += this.Timer_Elapsed;
+			this.updateInfoTimer.Elapsed += this.UpdateInfoTimer_Elapsed;
+			this.delayTimer.AutoReset = false;
+			this.timer.AutoReset = true;
+
+			this.controllerIdleGetter = new InputIdleGetter();
+			Automation.AddAutomationFocusChangedEventHandler(this.OnFocusChanged);
 		}
 
-		void OnFocusChanged(object sender, AutomationFocusChangedEventArgs e) {
+		private void OnFocusChanged(object sender, AutomationFocusChangedEventArgs e)
+		{
 			AutomationElement element = sender as AutomationElement;
 			if (element == null) { return; }
 
-			int processId = element.Current.ProcessId;
-			using (Process process = Process.GetProcessById(processId)) {
-				_currentProcess = process.ProcessName;
-				//Debug.WriteLine(String.Format("Current process: {0}",currentProcess));
+			try
+			{
+				int processId = element.Current.ProcessId;
+				using (Process process = Process.GetProcessById(processId))
+				{
+					this.currentProcess = process.ProcessName;
+					Debug.WriteLine(String.Format("Current process: {0}", this.currentProcess));
+				}
+			}
+			catch (Exception)
+			{
+				// Ignore.
 			}
 		}
-		private string _currentProcess = String.Empty;
 
-		void UpdateInfoTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-			UpdateLabels();
+		private string currentProcess = String.Empty;
+
+		private void UpdateInfoTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			this.UpdateLabels();
 		}
 
-		void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-			TimerExpired();
+		private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			this.TimerExpired();
 
-			_targetSaveTime = DateTime.Now.AddMilliseconds(_timer.Interval);
+			this.targetSaveTime = DateTime.Now.AddMilliseconds(this.timer.Interval);
 
-			if (_delayTimer.Enabled) {
-				DateTime delayTarget = DateTime.Now.AddMilliseconds(_delayTimer.Interval);
-				if (delayTarget < _targetSaveTime) {
-					_targetSaveTime = delayTarget;
+			if (this.delayTimer.Enabled)
+			{
+				DateTime delayTarget = DateTime.Now.AddMilliseconds(this.delayTimer.Interval);
+				if (delayTarget < this.targetSaveTime)
+				{
+					this.targetSaveTime = delayTarget;
 				}
 			}
 
-			UpdateLabels();
+			this.UpdateLabels();
 		}
 
-		private void Start() {
-			_timer.Interval = (double)nudSaveInterval.Value * 1000;
-			_targetSaveTime = DateTime.Now.AddMilliseconds(_timer.Interval);
-			_timer.Start();
-			_updateInfoTimer.Start();
-			btnStartStop.Text = "Stop";
+		private void Start()
+		{
+			this.timer.Interval = (double)this.nudSaveInterval.Value * 1000;
+			this.targetSaveTime = DateTime.Now.AddMilliseconds(this.timer.Interval);
+			this.timer.Start();
+			this.updateInfoTimer.Start();
+			this.btnStartStop.Text = "Stop";
 			this.Text = "AutoSaveState - Running";
 		}
 
-		private void Stop() {
-			_timer.Stop();
-			_delayTimer.Stop();
-			_updateInfoTimer.Stop();
-			btnStartStop.Text = "Start";
+		private void Stop()
+		{
+			this.timer.Stop();
+			this.delayTimer.Stop();
+			this.updateInfoTimer.Stop();
+			this.btnStartStop.Text = "Start";
 			this.Text = "AutoSaveState - Stopped";
-			lblTimeUntilSave.Text = "X seconds";
+			this.lblTimeUntilSave.Text = "X seconds";
 		}
 
-		private void TimerExpired() {
-			if (!_currentProcess.StartsWith("pcsx2", StringComparison.InvariantCultureIgnoreCase)) {
-				_delayTimer.Stop();
+		private void TimerExpired()
+		{
+			if (!this.currentProcess.StartsWith("pcsx2", StringComparison.InvariantCultureIgnoreCase))
+			{
+				Console.WriteLine($"Currentprocess is not pcsx2, name is {this.currentProcess}");
+				this.delayTimer.Stop();
 				return;
 			}
-			double idleTime = GetIdleTimeInSeconds();
-			double minIdleTime = (double)nudButtonDelay.Value;
+
+			double idleTime = this.controllerIdleGetter.GetIdleTime();
+			double minIdleTime = (double)this.nudButtonDelay.Value;
 
 			// if the user has not pressed a button for a time longer than the minimum idle time we send the keystrokes
-			if (idleTime + 0.001 > minIdleTime) {
+			if (idleTime + 0.001 > minIdleTime)
+			{
 				// stop the delaytimer since it is not needed anymore
-				_delayTimer.Stop();
+				this.delayTimer.Stop();
+
 				// try to save
-				Save();
+				this.Save();
+
 				// restart the main timer
-				_timer.Interval = (double)nudSaveInterval.Value * 1000;
+				this.timer.Interval = (double)this.nudSaveInterval.Value * 1000;
+
 				// quit the function since we did all we needed to do
 				return;
 			}
+			else
+			{
+				Console.WriteLine("Idle time too short, rescheduling save");
+			}
 
 			// this method should fire again as soon as the user is projected to have been idle long enough
-			double newInterval = (minIdleTime - idleTime) * 1000 + 100;
-			_delayTimer.Interval = newInterval;
+			double newInterval = ((minIdleTime - idleTime) * 1000) + 100;
+			this.delayTimer.Interval = newInterval;
+
 			// start the timer
-			_delayTimer.Start();
+			this.delayTimer.Start();
 		}
 
-		private void Save() {
-			Debug.WriteLine(String.Format(@"Saving at: {0:HH':'mm':'ss}, Time since last save: {1:0.00} minutes", DateTime.Now, (DateTime.Now - _lastSave).TotalMinutes));
+		private void Save()
+		{
+			Debug.WriteLine($"Saving at: {DateTime.Now:HH':'mm':'ss}, Time since last save: {(DateTime.Now - this.lastSave).TotalMinutes:0.00} minutes");
 			Color color = this.BackColor;
 			this.BackColor = Color.Green;
 			Application.DoEvents();
-			_ahk.ExecRaw(@"
+			this.ahk.ExecRaw(@"
 Send, {F2 Down}
 Sleep, 50
 Send, {F2 Up}
@@ -120,33 +155,36 @@ Send, {F1}
 ");
 			System.Threading.Thread.Sleep(500);
 			this.BackColor = color;
-			_timesSaved++;
-			_lastSave = DateTime.Now;
+			this.timesSaved++;
+			this.lastSave = DateTime.Now;
 		}
 
-		delegate void updateLabelsDelegate();
-		private void UpdateLabels() {
-			if (lblHead.InvokeRequired) {
-				lblHead.Invoke(new updateLabelsDelegate(UpdateLabels));
+		private delegate void UpdateLabelsDelegate();
+
+		private void UpdateLabels()
+		{
+			if (this.lblHead.InvokeRequired)
+			{
+				this.lblHead.Invoke(new UpdateLabelsDelegate(this.UpdateLabels));
 				return;
 			}
 
-			lblNumSaves.Text = String.Format("{0}", _timesSaved);
-			lblTimeUntilSave.Text = String.Format("{0:0.0} seconds", (_targetSaveTime - DateTime.Now).TotalSeconds);
+#pragma warning disable SA1121 // Use built-in type alias
+			this.lblNumSaves.Text = String.Format("{0}", this.timesSaved);
+			this.lblTimeUntilSave.Text = String.Format("{0:0.0} seconds", (this.targetSaveTime - DateTime.Now).TotalSeconds);
+#pragma warning restore SA1121 // Use built-in type alias
 		}
 
-		private void BtnStartStop_Click(object sender, EventArgs e) {
-			if (_running) { Stop(); } else { Start(); }
-			_running = !_running;
+		private void BtnStartStop_Click(object sender, EventArgs e)
+		{
+			if (this.running) { this.Stop(); } else { this.Start(); }
+			this.running = !this.running;
 		}
 
-		private double GetIdleTimeInSeconds() {
-			return Math.Min(KeyboardAndMouseIdleGetter.GetIdleTime(), _controllerIdleGetter.GetIdleTime());
-		}
-
-		private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
-			Stop();
-			_controllerIdleGetter.Dispose();
+		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			this.Stop();
+			this.controllerIdleGetter.Dispose();
 		}
 	}
 }
